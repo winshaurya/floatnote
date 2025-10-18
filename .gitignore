@@ -1,0 +1,88 @@
+# Logs
+src/data
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+# Logs
+logs/
+src/data/
+*.log
+npm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+.DS_Store
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Build / output
+out/
+dist/
+release/
+make/
+*.asar
+*.exe
+*.msi
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Package managers
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# dotenv environment variables file
+.env
+.env.test
+
+# Editor/IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Electron / Forge
+.forge/
+.webpack/
+.vscode-test/
+
+# Native build artifacts
+build/Release/
+
+# Logs and local state
+user-data/
+*.sqlite
+logs/
+*.log
+
+# Certificates / keys
+*.pem
+*.p12
+*.pfx
+
+# Keep developer created sample or local files
+src/data/
