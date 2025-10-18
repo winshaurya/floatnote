@@ -1,17 +1,10 @@
-# Desktop Notes
-
-Desktop Notes is a frameless Electron overlay for pinning translucent sticky notes and checklists directly on top of every application. The controller stays compact—mirroring the legacy Cheating Daddy square—and each note floats as an always-on-top window you can long-press anywhere to reposition.
-
-## Features
-# Fnote — Floatable Notes, Minimal & Powerful 🚀
-
-![Fnote hero](assets/hero.png)
+# Fnote
 
 Fnote is a tiny, private, local-first sticky-note overlay that sits above your desktop apps — translucency, color, and zero friction. Think of it as a Post‑it for the 21st century: instant, private, and always where you need it.
 
 --------------------------------------------------------------------------------
 
-## Quick start — run the app now (Windows PowerShell)
+## Quick start
 
 Clone, install, and run locally:
 
@@ -35,18 +28,18 @@ Notes:
 
 --------------------------------------------------------------------------------
 
-## What is Fnote? — product in one sentence
+## What is Fnote? | product in one sentence
 
 Fnote is a lightweight, always-on-top, translucent sticky-note utility for desktop power users who want frictionless note capture and a platform for tiny, delightful widgets.
 
-## Why Fnote — the opportunity
+## Why Fnote | the opportunity
 
 - People use notes continuously: quick reminders, code snippets, meeting times, and ephemeral ideas. Current ecosystems scatter notes across cloud apps and passive widgets; the occasional note needs to be right on top of your workflow.
 - Fnote is local-first, fast, and private — no account required to start. That lowers friction and increases retention for people who want instant notes without signups.
 
 --------------------------------------------------------------------------------
 
-## Target market & sizing (concise pitch numbers)
+## Target market & sizing 
 
 - Addressable market: Desktop productivity users (knowledge workers, devs, designers) — estimated hundreds of millions globally.
 - Sticky-note / quick-note product vertical: overlaps with desktop utilities and productivity tools. Conservatively, 5–10% adoption among active desktop users in target segments is a multi-million user outcome.
@@ -56,7 +49,7 @@ Market opportunity is real: small utilities can scale rapidly when they nail use
 
 --------------------------------------------------------------------------------
 
-## Vision & roadmap (how Fnote becomes a platform)
+## Vision (how Fnote becomes a platform)
 
 Phase 1 — Minimal sticky notes (MVP) — DONE/IN-PROGRESS
 - Frameless, translucent notes that float above other windows.
@@ -70,55 +63,66 @@ Phase 2 — Widgets & extensions (next 3–9 months)
 
 Phase 3 — Distribution & scale (9–24 months)
 - Desktop installers for Windows (.exe / Squirrel / NSIS) and macOS (.dmg), optional MSIX for Store distribution.
-# Fnote
+- Native app store presence and partnerships for OEM installs (optional).
+- Freemium model: base features free, premium widget marketplace access, syncing (opt-in), and cloud backup.
 
-[![Electron](https://img.shields.io/badge/Electron-✔-blue)](https://www.electronjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-✔-green)](https://nodejs.org/)
-[![SQLite](https://img.shields.io/badge/SQLite-✔-blueviolet)](https://www.sqlite.org/)
-[![Electron Forge](https://img.shields.io/badge/Electron_Forge-✔-orange)](https://www.electronforge.io/)
+Long-term: billions of users is an ambitious goal — we scale by specializing in discovery (widget marketplace), zero-friction onboarding, and integrations with platforms (Slack snippets, calendar previews, etc.).
 
-Fnote is a lightweight, always-on-top sticky-note overlay for desktop use. The focus is on speed, privacy, and small web-based widgets that extend the core note functionality.
+--------------------------------------------------------------------------------
 
-## Run (Windows PowerShell)
+## Next Idea
 
-```powershell
-cd C:\path\to\fnote
-npm install
-npm start
-```
+1. Clock widget
+  - Implement clock as a self-contained renderer window using existing note UI.
+  - Clock has configurable styles, timezones, and alarm hooks.
+2. Widget architecture
+  - Each widget is a small web package (HTML + JS + CSS) with a restricted API surface exposed by preload scripts.
+  - A widget sandbox ensures no arbitrary Node access; only allowed APIs: storage, small IPC hooks (send event, open note, set alarm).
+  - Widgets are discovered via a curated marketplace and installed to the user's profile folder.
 
-## What we build
+3. Marketplace flow
+  - Developer portal (simple): package widget zip with a manifest (name, author, version, permissions).
+  - Users browse inside Fnote UI, preview widgets, and click Install (downloads packaged widget and stores locally).
+  - Monetization: revenue share for paid widgets; free widgets grow the ecosystem.
 
-- Frameless translucent notes that float above other apps
-- Drag anywhere to move, resize freely, per-note color and opacity
-- Local-first storage with SQLite (no account required)
-- Extensible widget model (clock, timers, small utilities)
+--------------------------------------------------------------------------------------------------------
 
-## Tech stack
+## How this README helps contributors — dev notes
 
-- Electron + Node.js
-- better-sqlite3 (SQLite)
-- Electron Forge for packaging
-- vitest for testing
+- Run locally with `npm install && npm start` (see top)  
+- The main process is in `src/main.js`, preload scripts in `src/preload.js`, renderer UI in `src/*.html` and `src/*.js`.  
+- Database code lives under `src/db-*.js` and uses `better-sqlite3`.
 
-## Roadmap
+--------------------------------------------------------------------------------
 
-1. Stabilize core note UX and persistence
-2. Add first widgets: clock, timer, clipboard quick-add
-3. Widget sandbox and curated marketplace
-4. Cross-platform packaging and distribution
+## Model
 
-## Packaging
+- Freemium: core notes are free; premium subscription unlocks cloud sync and marketplace perks.  
+- Marketplace: paid widgets with revenue share to creators.  
+- Partnerships: bundle Fnote with productivity suites or OEMs for distribution.
 
-```powershell
-npm run make
-```
-
-## Contributing
-
-Open an issue or PR. Maintain clean commits and include tests when possible.
-
-## License
-
-MIT
+Acquisition channels:
 - Developer communities (dev tools bundles, VS Code extensions cross-promo).  
+- Productivity blogs & creators.  
+- Paid ads & referral programs for early adopters.
+
+--------------------------------------------------------------------------------
+
+## Growth & scaling to billions of users
+
+1. Nail retention: Make the core experience indestructible — fast startup, tiny memory, privacy-first.  
+2. Network effects via widgets: a thriving marketplace increases stickiness and virality.  
+3. Cross-platform presence + OEM deals: partner with manufacturers and software distributors.  
+
+Billions is aspirational — but focusing on a small, high-value core feature set and building a platform around it is the proven way utilities scale.
+
+-------------------------------------------------------------------------------------------
+
+## Contributors & license
+
+This repo is maintained by `winshaurya`. If you want to contribute, open an issue or a pull request and we’ll review it.
+
+Suggested LICENSE: MIT (add `LICENSE` file if you want to open-source).
+
+--------------------------------------------------------------------------------
+
