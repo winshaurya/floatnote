@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            http-equiv="content-security-policy"
+            content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Desktop Note</title>
+        <style>
+            :root {
+                --note-background: #2b2b2b;
+                --note-ink: #f9f9fb;
+                --note-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+                -webkit-font-smoothing: antialiased;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                margin: 0;
+                height: 100%;
+                background: transparent;
+                font-family:
+                    'BBH Sans Hegartly',
+                    'Inter',
+                    'Segoe UI',
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    sans-serif;
+                color: var(--note-ink);
+            }
+
+            body {
+                display: flex;
+                align-items: stretch;
+                justify-content: stretch;
+            }
+
+            #note-surface {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                padding: 12px;
+                border-radius: 18px;
+                background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.1) 0%,
+                    rgba(255, 255, 255, 0.05) 25%,
+                    rgba(255, 255, 255, 0.08) 50%,
+                    rgba(255, 255, 255, 0.03) 75%,
+                    rgba(255, 255, 255, 0.1) 100%);
+                color: var(--note-ink);
+                backdrop-filter: blur(16px) saturate(180%);
+                -webkit-backdrop-filter: blur(16px) saturate(180%);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.12),
+                    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+                    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+                    0 -1px 0 rgba(255, 255, 255, 0.1) inset;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                -webkit-app-region: drag;
+                --placeholder-color: rgba(255, 255, 255, 0.32);
+                animation: fluidShimmer 6s ease-in-out infinite alternate;
+            }
+
+            @keyframes fluidShimmer {
+                0% {
+                    box-shadow:
+                        0 8px 32px rgba(0, 0, 0, 0.12),
+                        0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+                        0 1px 0 rgba(255, 255, 255, 0.2) inset,
+                        0 -1px 0 rgba(255, 255, 255, 0.1) inset,
+                        0 0 15px rgba(255, 255, 255, 0.05);
+                }
+                50% {
+                    box-shadow:
+                        0 8px 32px rgba(0, 0, 0, 0.15),
+                        0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+                        0 1px 0 rgba(255, 255, 255, 0.25) inset,
+                        0 -1px 0 rgba(255, 255, 255, 0.08) inset,
+                        0 0 20px rgba(255, 255, 255, 0.08);
+                }
+                100% {
+                    box-shadow:
+                        0 8px 32px rgba(0, 0, 0, 0.12),
+                        0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+                        0 1px 0 rgba(255, 255, 255, 0.2) inset,
+                        0 -1px 0 rgba(255, 255, 255, 0.1) inset,
+                        0 0 15px rgba(255, 255, 255, 0.05);
+                }
+            }
+
+            #note-surface.matte {
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                background: var(--solid-background);
+                border: 1px solid rgba(0,0,0,0.1);
+                box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            }
+
+            #note-surface.none {
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+            }
+
+            #note-surface.force-drag {
+                -webkit-app-region: drag;
+                cursor: move;
+            }
+
+            #note-surface.force-drag .controls,
+            #note-surface.force-drag #note-content {
+                pointer-events: none;
+                user-select: none;
+            }
+
+            body.force-drag {
+                cursor: move;
+            }
+
+            .controls {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 6px;
+                width: 80%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                z-index: 10;
+                background: transparent;
+            }
+
+            .controls > * {
+                -webkit-app-region: no-drag;
+            }
+
+            .modal {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.3);
+                display: flex;
+                align-items: flex-end;
+                justify-content: center;
+                z-index: 1000;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.2s ease, visibility 0.2s ease;
+            }
+
+            .modal.show {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .modal-content {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                border-radius: 12px 12px 0 0;
+                padding: 16px;
+                max-width: 360px;
+                width: 100%;
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+                color: #333;
+                transform: translateY(100%);
+                transition: transform 0.3s ease;
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+
+            .modal.show .modal-content {
+                transform: translateY(0);
+            }
+
+            .modal-content.matte {
+                background: var(--modal-background);
+                backdrop-filter: none;
+            }
+
+            .modal-content.none {
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: none;
+            }
+
+            .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+            }
+
+            .modal-title {
+                font-size: 16px;
+                font-weight: 600;
+                margin: 0;
+            }
+
+            .modal-close {
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+                padding: 0;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .modal-body {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
+
+            .form-label {
+                font-size: 12px;
+                font-weight: 500;
+                color: #555;
+            }
+
+            .form-control {
+                padding: 6px 10px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 13px;
+                background: white;
+                color: #333;
+            }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+            }
+
+            .theme-selector {
+                display: flex;
+                gap: 8px;
+            }
+
+            .theme-option {
+                flex: 1;
+                padding: 6px;
+                border: 2px solid #ddd;
+                border-radius: 6px;
+                background: white;
+                cursor: pointer;
+                text-align: center;
+                font-size: 11px;
+                transition: all 0.2s ease;
+            }
+
+            .theme-option.selected {
+                border-color: #007bff;
+                background: #f8f9fa;
+            }
+
+            .modal-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 6px;
+                margin-top: 12px;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                padding: 6px 12px;
+                border: none;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                transition: background 0.2s ease;
+            }
+
+            .btn-primary {
+                background: #007bff;
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background: #0056b3;
+            }
+
+            .btn-secondary {
+                background: #6c757d;
+                color: white;
+            }
+
+            .btn-secondary:hover {
+                background: #545b62;
+            }
+
+            input[type='color'] {
+                appearance: none;
+                width: 20px;
+                height: 20px;
+                border: none;
+                padding: 0;
+                border-radius: 6px;
+                overflow: hidden;
+                cursor: pointer;
+                box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+                background: none;
+            }
+
+            input[type='color']::-webkit-color-swatch {
+                border: none;
+                border-radius: 6px;
+            }
+
+            select {
+                appearance: none;
+                border: none;
+                background: rgba(0, 0, 0, 0.18);
+                color: inherit;
+                font: inherit;
+                padding: 2px 6px;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+            button.icon {
+                appearance: none;
+                border: none;
+                background: transparent;
+                color: inherit;
+                width: 18px;
+                height: 18px;
+                font-size: 16px;
+                line-height: 1;
+                cursor: pointer;
+                padding: 0;
+                display: grid;
+                place-items: center;
+                transition: opacity 0.15s ease;
+            }
+
+            button.icon:hover {
+                opacity: 0.75;
+            }
+
+            #note-content {
+                flex: 1;
+                width: 100%;
+                resize: none;
+                border: none;
+                outline: none;
+                background: transparent;
+                color: inherit;
+                font: inherit;
+                font-size: 15px;
+                line-height: 1.55;
+                padding: 0;
+                margin: 0;
+                -webkit-app-region: no-drag;
+            }
+
+            #note-content::placeholder {
+                color: var(--placeholder-color);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="note-surface">
+            <div class="controls">
+                <button id="settings-btn" class="icon" title="Settings">⚙</button>
+                <button id="close-btn" class="icon" title="Close note">×</button>
+            </div>
+            <textarea
+                id="note-content"
+                spellcheck="false"
+                placeholder="Write something..."
+                autocomplete="off"
+            ></textarea>
+        </div>
+
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Note Settings</h2>
+                    <button id="modal-close" class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row" style="display: flex; gap: 8px;">
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" for="modal-color-picker">Color</label>
+                            <input id="modal-color-picker" type="color" class="form-control" />
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" for="modal-opacity">Transparency</label>
+                            <input id="modal-opacity" type="range" min="0.1" max="1" step="0.05" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-row" style="display: flex; gap: 8px;">
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" for="modal-font-picker">Font</label>
+                            <select id="modal-font-picker" class="form-control">
+                                <option value="BBH Sans Hegartly">BBH Sans Hegartly</option>
+                                <option value="Inter">Inter</option>
+                                <option value="SF Pro Text">SF Pro Text</option>
+                                <option value="JetBrains Mono">JetBrains Mono</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" for="modal-font-size">Font Size</label>
+                            <input id="modal-font-size" type="number" min="10" max="48" step="1" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-row" style="display: flex; gap: 8px;">
+                        <div class="form-group" style="flex:2;">
+                            <label class="form-label">Theme</label>
+                            <div class="theme-selector">
+                                <div class="theme-option" data-theme="glass">Glass</div>
+                                <div class="theme-option" data-theme="matte">Matte</div>
+                                <div class="theme-option" data-theme="none">None</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button id="modal-show-main-menu" class="btn btn-secondary">Show Main Menu</button>
+                    <button id="modal-duplicate" class="btn btn-secondary">Duplicate</button>
+                    <button id="modal-delete" class="btn btn-secondary">Delete</button>
+                    <button id="modal-save" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <script type="module" src="./note.js"></script>
+    </body>
+</html>
