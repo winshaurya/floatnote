@@ -70,6 +70,7 @@ export function createMainMenuWindow(options = {}) {
     const window = new BrowserWindow({
         width: MAIN_MENU_DIMENSION,
         height: MAIN_MENU_DIMENSION,
+        icon: path.join(process.cwd(), 'src', 'assets', 'logo.ico'),
         resizable: false,
         minimizable: false,
         maximizable: false,
