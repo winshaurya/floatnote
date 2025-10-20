@@ -1,0 +1,23 @@
+{
+    "appId": "Floatnote",
+    "productName": "FloatNote",
+    "directories": {
+        "output": "pdist"
+    },
+    "win": {
+        "target": "portable"
+    },
+    "compression": "maximum",
+    "asar": true,
+    "files": [
+        "dist/**",
+        "src/index.js",
+        "src/app-init.js",
+        "src/preload.js",
+        "node_modules/**",
+        "src/assets/**"
+    ],
+    "asarUnpack": [
+        "node_modules/better-sqlite3/**/*"
+    ]
+}
