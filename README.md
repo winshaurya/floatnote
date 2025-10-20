@@ -87,13 +87,6 @@ Long-term: billions of users is an ambitious goal — we scale by specializing i
 
 --------------------------------------------------------------------------------------------------------
 
-## How this README helps contributors — dev notes
-
-- Run locally with `npm install && npm start` (see top)  
-- The main process is in `src/main.js`, preload scripts in `src/preload.js`, renderer UI in `src/*.html` and `src/*.js`.  
-- Database code lives under `src/db-*.js` and uses `better-sqlite3`.
-
---------------------------------------------------------------------------------
 
 ## Model
 
@@ -121,8 +114,6 @@ Billions is aspirational — but focusing on a small, high-value core feature se
 ## Contributors & license
 
 This repo is maintained by `winshaurya`. If you want to contribute, open an issue or a pull request and we’ll review it.
-
-Suggested LICENSE: MIT (add `LICENSE` file if you want to open-source).
 
 --------------------------------------------------------------------------------
 
