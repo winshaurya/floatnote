@@ -13,6 +13,7 @@ module.exports = defineConfig({
     resolve: {
         alias: {
             electron: path.resolve(__dirname, 'src/__mocks__/electron.js'),
+            '@': path.resolve(__dirname, 'src'),
         },
     },
 });

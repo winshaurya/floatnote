@@ -4,6 +4,7 @@ import { initializeDatabase, getAllNotes, getNoteById, createNote, updateNoteBou
 import { setupWindowStateStore, getVisibleNoteIds, removeNote, setNoteVisibility } from './utils/window-state.js';
 import { mainMenuWindow, noteWindows, createMainMenuWindow, createNoteWindow, showMainMenu, broadcastNoteUpdate, toggleAllWindows } from './window-manager.js';
 import { setupIpcHandlers } from './ipc-handlers.js';
+import floatNoteAutoLauncher from './auto-launch.js';
 
 export function registerGlobalShortcut() {
     globalShortcut.unregisterAll();

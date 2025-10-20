@@ -1,4 +1,4 @@
-import { BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen } from 'electron';
 import path from 'node:path';
 import { getAllNotes, getNoteById, createNote, updateNoteBounds } from './utils/database.js';
 import { setMainMenuVisibility, setNoteVisibility, removeNote } from './utils/window-state.js';
@@ -14,11 +14,14 @@ export const noteWindows = new Map();
 export let allWindowsHidden = false;
 
 export function getPreloadPath() {
-    return path.join(process.cwd(), 'src', 'preload.js');
+    // Prefer the application's installed path (works with asar and packaged apps)
+    const base = app && typeof app.getAppPath === 'function' ? app.getAppPath() : process.cwd();
+    return path.join(base, 'src', 'preload.js');
 }
 
 export function resolveHtml(fileName) {
-    return path.join(process.cwd(), 'src', fileName);
+    const base = app && typeof app.getAppPath === 'function' ? app.getAppPath() : process.cwd();
+    return path.join(base, 'src', fileName);
 }
 
 export function applyAlwaysOnTop(window) {
@@ -88,6 +91,7 @@ export function createMainMenuWindow(options = {}) {
             contextIsolation: true,
             nodeIntegration: false,
             backgroundThrottling: false,
+            devTools: false
         },
     });
     // Keep reference to the created main menu window so other modules can
@@ -167,7 +171,7 @@ export function createNoteWindow(note) {
         height: note.height,
     });
     const window = new BrowserWindow({
-        title: 'Desktop Note',
+    title: 'FloatNote',
         x: bounds.x,
         y: bounds.y,
         width: bounds.width,
@@ -192,6 +196,7 @@ export function createNoteWindow(note) {
             contextIsolation: true,
             nodeIntegration: false,
             backgroundThrottling: false,
+            devTools: false
         },
     });
     applyAlwaysOnTop(window);

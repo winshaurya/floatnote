@@ -1,3 +1,42 @@
+const path = require('path');
+
+module.exports = {
+  packagerConfig: {
+    icon: path.join('src', 'assets', 'logo'),
+    asar: true,
+    unpack: '**/better-sqlite3/**'
+  },
+  rebuildConfig: {},
+  plugins: [
+    {
+      name: '@electron-forge/plugin-auto-unpack-natives',
+      config: {}
+    }
+  ],
+  makers: [
+    {
+      name: '@electron-forge/maker-squirrel',
+      config: {
+        name: 'floatnote',
+        productName: 'FloatNote',
+        setupExe: 'FloatNoteSetup.exe',
+        setupIcon: path.join('src', 'assets', 'logo.ico'),
+        createDesktopShortcut: true,
+        createStartMenuShortcut: true
+      }
+    },
+    {
+      name: '@electron-forge/maker-zip',
+      platforms: ['darwin', 'linux', 'win32']
+    },
+    {
+      name: '@electron-forge/maker-deb'
+    },
+    {
+      name: '@electron-forge/maker-rpm'
+    }
+  ]
+};
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
@@ -7,8 +46,25 @@ module.exports = {
             unpack: '*.node',
             unpackDir: 'node_modules/better-sqlite3'
         },
-        name: 'Desktop Notes',
+    name: 'FloatNote',
         icon: 'src/assets/logo',
+        ignore: [
+            /\.git/,
+            /\.vscode/,
+            /out/,
+            /node_modules/,
+            /\.log$/,
+            /test/,
+            /tests/,
+            /\.DS_Store/,
+            /Thumbs.db/,
+            /\.prettierrc/,
+            /\.prettierignore/,
+            /vitest\.config\.js/,
+            /README\.md/,
+            /prd\.txt/,
+            /entitlements\.plist/
+        ],
         // use `security find-identity -v -p codesigning` to find your identity
         // for macos signing
         // also fuck apple
@@ -32,13 +88,16 @@ module.exports = {
         {
             name: '@electron-forge/maker-squirrel',
             config: {
-                name: 'desktop-notes',
-                productName: 'Desktop Notes',
-                shortcutName: 'Desktop Notes',
+                name: 'floatnote',
+                productName: 'FloatNote',
+                shortcutName: 'FloatNote',
                 createDesktopShortcut: true,
                 createStartMenuShortcut: true,
             },
         },
+        {
+            name: '@electron-forge/maker-zip'
+        }
     ],
     plugins: [
         {

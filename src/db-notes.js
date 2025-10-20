@@ -31,7 +31,7 @@ export function initializeDatabase(userDataPath) {
         throw new Error('userDataPath is required to initialize the database');
     }
     fs.mkdirSync(userDataPath, { recursive: true });
-    sqliteFilePath = path.join(userDataPath, 'desktop-notes.sqlite');
+    sqliteFilePath = path.join(userDataPath, 'floatnote.sqlite');
     dbInstance = new Database(sqliteFilePath);
     dbInstance.pragma('journal_mode = WAL');
     dbInstance.pragma('foreign_keys = ON');

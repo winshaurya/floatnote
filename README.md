@@ -1,5 +1,18 @@
 # Fnote
 
+## TODO: Lightweight Portable .exe Build Steps
+
+- [ ] Analyze current dependencies and runtime requirements
+- [ ] Remove unnecessary dev dependencies and tools
+- [ ] Switch packaging from electron-forge to electron-builder
+- [ ] Enable ASAR packaging in electron-builder config
+- [ ] Disable unused Electron features and fuses
+- [ ] Build frontend separately with Vite
+- [ ] Configure electron-builder for portable EXE target with maximum compression
+- [ ] Strip debug symbols and electron junk
+- [ ] Build portable .exe and test on clean system
+- [ ] Verify final file size and runtime
+
 Fnote is a tiny, private, local-first sticky-note overlay that sits above your desktop apps — translucency, color, and zero friction. Think of it as a Post‑it for the 21st century: instant, private, and always where you need it.
 
 --------------------------------------------------------------------------------
@@ -116,4 +129,3 @@ Billions is aspirational — but focusing on a small, high-value core feature se
 This repo is maintained by `winshaurya`. If you want to contribute, open an issue or a pull request and we’ll review it.
 
 --------------------------------------------------------------------------------
-
